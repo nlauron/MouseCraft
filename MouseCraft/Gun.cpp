@@ -35,7 +35,7 @@ void Gun::use() {
 	auto p1 = GetEntity()->transform;
 	auto pos = p1.getWorldPosition();
 	auto end = pos + p1.getWorldForward() * range;
-	pc->rayCheck(stuff, new Vector2D(pos.x, pos.z), new Vector2D(end.x, end.z), true);
+	pc->rayCheck(stuff, new Vector2D(pos.x, pos.z), new Vector2D(end.x, end.z));
 	mice->dropItem();
 	this->GetEntity()->Destroy();
 }
