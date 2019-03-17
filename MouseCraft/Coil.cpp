@@ -24,16 +24,30 @@ bool Coil::use() {
 	GetEntity()->SetParent(OmegaEngine::Instance().GetRoot());
 	fieldEntity->SetEnabled(true);
 
-	_isPlaced = true;
+	std::cout << "COIL is being used" << std::endl;
+	PhysicsComponent* pc = GetEntity()->GetComponent<PhysicsComponent>();
+	std::vector<PhysObjectType::PhysObjectType> stuff;
 
-	// determine which layer to check for 
-	auto micePhys = GetEntity()->GetParent()->GetComponent<PhysicsComponent>();
-	checkFor.insert(micePhys->isUp ? PhysObjectType::CAT_UP : PhysObjectType::CAT_DOWN);
-	
-	// create physics at the correct location 
-	// however we don't actually need physics body for coil so we skip it
+	if (pc->type = PhysObjectType::CONTRAPTION_DOWN) {
+		stuff.push_back(PhysObjectType::CAT_DOWN);
+		stuff.push_back(PhysObjectType::OBSTACLE_DOWN);
+	}
 
-	return true;
+	if (pc->type = PhysObjectType::CONTRAPTION_UP) {
+		stuff.push_back(PhysObjectType::CAT_UP);
+		stuff.push_back(PhysObjectType::OBSTACLE_UP);
+	}
+
+	auto p1 = fieldEntity->transform;
+	auto pos = p1.getWorldPosition();
+	auto bl = pos - glm::vec3(-1, 0, -1);
+	auto tr = pos - glm::vec3(1, 0, 1);
+	auto target = pc->areaCheck(stuff, new Vector2D(bl.x, bl.z), new Vector2D(tr.x, tr.z));
+	if (find(target.begin(), target.end(), PhysObjectType::CAT_DOWN) != target.end()) {
+		// deal damage
+		this->Drop();
+		this->GetEntity()->Destroy();
+	}
 }
 
 void Coil::show() {
